@@ -6,13 +6,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent implements OnInit {
-  title = 'sesja-counter';
   //9 czerwca ostatni niemiecki
   //13 czerwca początek sesji
   lastGermanClassesDate = new Date('2022-06-12T00:00:01');
   examSessionDate = new Date('2022-06-13T00:00:01');
   germanClassesLeftCount = 0;
   daysUntilExamSession = 0;
+
+  germanClassesText = "";
+  examSessionText = "";
 
   week = 7 * 24 * 60 * 60 * 1000;
   day = 24 * 60 * 60 * 1000;
@@ -21,6 +23,14 @@ export class AppComponent implements OnInit {
       this.germanClassesLeftCount = this.germanClassesLeft();
       this.daysUntilExamSession = Math.round(
         Math.abs((this.examSessionDate.valueOf() - new Date().valueOf()) / this.day));
+      
+      this.germanClassesText = this.germanClassesLeftCount > 0
+        ? `Pozostało ${this.germanClassesLeftCount} niemieckich`
+        : "JEBAĆ ASKE!!! Gratulacje że przeżyłaś";
+
+      this.examSessionText = this.daysUntilExamSession > 0
+        ? `Do sesji pozostało ${this.daysUntilExamSession} dni`
+        : "SESJA IS HERE :(";
   }
 
   private startOfWeek(dt: Date) {

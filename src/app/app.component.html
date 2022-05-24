@@ -1,6 +1,6 @@
 <div class="container">
   <div class="content">
-    <h1>{{ germanClassesText }}</h1>
-    <h1>{{ examSessionText }}</h1>
+    <h1 [ngClass]="screen.width < 700 ? '' : 'big-text'">{{ examSessionText }}</h1>
+    <h2>{{ germanClassesText }}</h2>
   </div>
 </div>

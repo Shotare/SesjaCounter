@@ -10,27 +10,65 @@ export class AppComponent implements OnInit {
   //13 czerwca początek sesji
   lastGermanClassesDate = new Date('2022-06-12T00:00:01');
   examSessionDate = new Date('2022-06-13T00:00:01');
+
   germanClassesLeftCount = 0;
-  daysUntilExamSession = 0;
+
+  examSessionDaysLeft = "";
+  examSessionHoursLeft = "";
+  examSessionMinutesLeft = "";
+  examSessionSecondsLeft = "";
 
   germanClassesText = "";
   examSessionText = "";
+
+  screen = screen;
 
   week = 7 * 24 * 60 * 60 * 1000;
   day = 24 * 60 * 60 * 1000;
 
   ngOnInit(): void {
-      this.germanClassesLeftCount = this.germanClassesLeft();
-      this.daysUntilExamSession = Math.round(
-        Math.abs((this.examSessionDate.valueOf() - new Date().valueOf()) / this.day));
-      
-      this.germanClassesText = this.germanClassesLeftCount > 0
-        ? `Pozostało ${this.germanClassesLeftCount} niemieckich`
-        : "JEBAĆ ASKE!!! Gratulacje że przeżyłaś";
+      setInterval(() => {
+        this.germanClassesLeftCount = this.germanClassesLeft();
+        this.setExamSessionValues();
+        
+        this.germanClassesText = this.germanClassesLeftCount > 0
+          ? `Pozostało ${this.germanClassesLeftCount} niemieckich`
+          : "JEBAĆ ASKE!!! Gratulacje że przeżyłaś";
+  
+        this.examSessionText = Number(this.examSessionDaysLeft) > 0
+          ? `${this.examSessionDaysLeft}:${this.examSessionHoursLeft}:${this.examSessionMinutesLeft}:${this.examSessionSecondsLeft}`
+          : "SESJA IS HERE :(";
+      }, 1000);
+  }
 
-      this.examSessionText = this.daysUntilExamSession > 0
-        ? `Do sesji pozostało ${this.daysUntilExamSession} dni`
-        : "SESJA IS HERE :(";
+  private setExamSessionValues(): void {
+    var delta = Math.abs(this.examSessionDate.valueOf() - new Date().valueOf()) / 1000;
+
+    let days = Math.floor(delta / 86400);
+    this.examSessionDaysLeft = days.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+    delta -= days * 86400;
+
+    let hours = Math.floor(delta / 3600) % 24;
+    this.examSessionHoursLeft = hours.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+    delta -= hours * 3600;
+
+    let minutes = Math.floor(delta / 60) % 60;
+    this.examSessionMinutesLeft = minutes.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+    delta -= minutes * 60;
+
+    this.examSessionSecondsLeft = Math.floor(delta % 60).toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
   }
 
   private startOfWeek(dt: Date) {
@@ -46,9 +84,9 @@ export class AppComponent implements OnInit {
     let weekday = new Date().getDay();
 
     if (weekday <= 1)
-      return this.weeksBetween(new Date(), this.lastGermanClassesDate) * 2 - 1;
+      return this.weeksBetween(new Date(), this.lastGermanClassesDate) * 2;
     if (weekday < 5)
-      return (this.weeksBetween(new Date(), this.lastGermanClassesDate) * 2) - 2;
-    return (this.weeksBetween(new Date(), this.lastGermanClassesDate) * 2) - 3;
+      return (this.weeksBetween(new Date(), this.lastGermanClassesDate) * 2) - 1;
+    return (this.weeksBetween(new Date(), this.lastGermanClassesDate) * 2) - 2;
   }
 }
